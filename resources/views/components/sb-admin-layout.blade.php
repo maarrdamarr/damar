@@ -44,7 +44,7 @@
 
             @if(Auth::user()->role == 'seller')
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('seller.dashboard') }}">
+                <a class="nav-link" href="{{ route('seller.items.index') }}">
                     <i class="fas fa-fw fa-store"></i>
                     <span>Dashboard Penjual</span>
                 </a>

@@ -39,6 +39,8 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     })->name('dashboard');
 
     // Nanti tambah route upload barang di sini
+    // Route Barang (Baru)
+    Route::resource('items', \App\Http\Controllers\Seller\ItemController::class);
 });
 
 

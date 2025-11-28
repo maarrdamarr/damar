@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Http\Controllers\Seller;
+
+use App\Http\Controllers\Controller;
+use App\Models\Item;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+class ItemController extends Controller
+{
+    // 1. Tampilkan Barang Milik Seller Sendiri
+    public function index()
+    {
+        $items = Item::where('user_id', Auth::id())->latest()->get();
+        return view('seller.items.index', compact('items'));
+    }
+
+    // 2. Form Tambah Barang
+    public function create()
+    {
+        return view('seller.items.create');
+    }
+
+    // 3. Simpan Barang
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required',
+            'start_price' => 'required|numeric|min:1000',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('items', 'public');
+        }
+
+        Item::create([
+            'user_id' => Auth::id(), // Otomatis set pemilik barang
+            'name' => $request->name,
+            'description' => $request->description,
+            'start_price' => $request->start_price,
+            'image' => $imagePath,
+            'status' => 'open',
+        ]);
+
+        return redirect()->route('seller.items.index')->with('success', 'Barang berhasil diupload!');
+    }
+
+    // 4. Hapus Barang
+    public function destroy(Item $item)
+    {
+        // Pastikan yang menghapus adalah pemiliknya
+        if ($item->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($item->image) {
+            Storage::disk('public')->delete($item->image);
+        }
+        
+        $item->delete();
+        return redirect()->route('seller.items.index')->with('success', 'Barang dihapus.');
+    }
+}
