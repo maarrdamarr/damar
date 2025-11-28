@@ -5,9 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Halaman Depan (Bisa diakses siapa saja)
-Route::get('/', function () {
-    return view('welcome');
-});
+// Halaman Depan
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Redirect Dashboard sesuai Role
 Route::get('/dashboard', function () {
