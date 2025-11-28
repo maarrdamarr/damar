@@ -123,7 +123,26 @@
     </li>
     @endif
 
-    <hr class="sidebar-divider d-none d-md-block">
+<hr class="sidebar-divider d-none d-md-block">
+
+    <div class="sidebar-heading">Akun</div>
+
+    <li class="nav-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('profile.edit') }}">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Pengaturan Akun</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <form method="POST" action="{{ route('logout') }}" id="logoutSidebarForm">
+            @csrf
+            <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logoutSidebarForm').submit();">
+                <i class="fas fa-fw fa-sign-out-alt"></i>
+                <span>Log Out</span>
+            </a>
+        </form>
+    </li>
 
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>

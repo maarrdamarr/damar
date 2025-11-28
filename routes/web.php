@@ -92,4 +92,11 @@ Route::middleware('auth')->group(function() {
     Route::post('/message/{id}', [\App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
     Route::post('/comments/{item_id}', [\App\Http\Controllers\CommentController::class, 'store'])->middleware('auth')->name('comments.store');
 });
+
+// === ROUTE PROFIL (BAWAAN BREEZE) - PASTIKAN INI ADA ===
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 require __DIR__.'/auth.php';
