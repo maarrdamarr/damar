@@ -42,4 +42,26 @@ class WalletController extends Controller
 
         return back()->with('success', 'Top-up disetujui, saldo user bertambah.');
     }
+    // ADMIN: Tambah Saldo Manual ke User Tertentu
+    public function manualTopup(Request $request, $id)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        // 1. Tambah ke History Topup (Status langsung Approved)
+        Topup::create([
+            'user_id' => $user->id,
+            'amount' => $request->amount,
+            'status' => 'approved', // Langsung sukses
+        ]);
+
+        // 2. Update Saldo User
+        $user->balance += $request->amount;
+        $user->save();
+
+        return back()->with('success', 'Berhasil menambahkan Rp ' . number_format($request->amount) . ' ke saldo ' . $user->name);
+    }
 }

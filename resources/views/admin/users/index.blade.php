@@ -33,17 +33,53 @@
                             </td>
                             <td>{{ $user->created_at->format('d M Y') }}</td>
                             <td>
-                                <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin mem-banned user ini? Data barang/bid mereka juga akan terhapus!');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="fas fa-ban"></i> Ban User
-                                    </button>
-                                </form>
-                            </td>
+    <div class="d-flex">
+        <button type="button" class="btn btn-success btn-sm mr-1" data-toggle="modal" data-target="#topupModal{{ $user->id }}" title="Isi Saldo Manual">
+            <i class="fas fa-wallet"></i> +Saldo
+        </button>
+
+        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-info btn-sm mr-1">
+            <i class="fas fa-edit"></i>
+        </a>
+
+        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin mem-banned user ini?');">
+            @csrf
+            @method('DELETE')
+            <button class="btn btn-danger btn-sm">
+                <i class="fas fa-ban"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="modal fade" id="topupModal{{ $user->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Isi Saldo: {{ $user->name }}</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('admin.users.topup', $user->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Saldo Saat Ini: <strong>Rp {{ number_format($user->balance) }}</strong></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Nominal Tambahan (Rp)</label>
+                            <input type="number" name="amount" class="form-control" placeholder="Contoh: 500000" min="1000" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">Konfirmasi Top Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </td>
                         </tr>
                         @endforeach
                     </tbody>

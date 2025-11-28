@@ -40,6 +40,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'adminIndex'])->name('wallet.index');
     Route::post('/wallet/{id}/approve', [\App\Http\Controllers\WalletController::class, 'approve'])->name('wallet.approve');
+
+    // Route Tambah Saldo Manual
+    Route::post('/users/{id}/topup', [\App\Http\Controllers\WalletController::class, 'manualTopup'])->name('users.topup');
 });
 
 // --- UPDATE GROUP SELLER ---
