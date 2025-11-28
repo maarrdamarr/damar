@@ -69,6 +69,12 @@
                     <span>Riwayat Bid</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('bidder.auction.index') }}">
+                    <i class="fas fa-fw fa-gavel"></i>
+                    <span>Bursa Lelang</span>
+                </a>
+            </li>
             @endif
 
             <hr class="sidebar-divider d-none d-md-block">

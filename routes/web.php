@@ -52,6 +52,10 @@ Route::middleware(['auth', 'role:bidder|admin|seller'])->prefix('bidder')->name(
     })->name('dashboard');
 
     // Nanti tambah route bidding di sini
+    // Route Lelang (Baru)
+    Route::get('/auctions', [\App\Http\Controllers\Bidder\AuctionController::class, 'index'])->name('auction.index');
+    Route::get('/auctions/{id}', [\App\Http\Controllers\Bidder\AuctionController::class, 'show'])->name('auction.show');
+    Route::post('/auctions/{id}', [\App\Http\Controllers\Bidder\AuctionController::class, 'store'])->name('auction.store');
 });
 
 
