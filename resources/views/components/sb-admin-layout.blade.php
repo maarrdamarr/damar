@@ -44,6 +44,11 @@
                     <i class="fas fa-fw fa-money-bill-wave"></i><span>Approval Dompet</span>
                 </a>
             </li>
+            <li class="nav-item {{ request()->routeIs('admin.wallet.history') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.wallet.history') }}">
+                    <i class="fas fa-fw fa-history"></i><span>History Transaksi</span>
+                </a>
+            </li>
             <li class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.users.index') }}">
                     <i class="fas fa-fw fa-users-cog"></i><span>Kelola Pengguna</span>

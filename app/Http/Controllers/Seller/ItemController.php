@@ -69,14 +69,30 @@ class ItemController extends Controller
     public function closeAuction($id)
     {
         $item = Item::where('user_id', Auth::id())->findOrFail($id);
-        
+
         // Ubah status jadi closed
         $item->update(['status' => 'closed']);
 
-        // Logikanya: Bidder tertinggi otomatis jadi pemenang di mata sistem
-        // Kita tidak perlu tabel khusus, cukup cek status 'closed' dan bid tertinggi
-        
-        return back()->with('success', 'Lelang ditutup! Pemenang telah ditentukan.');
+        // Cari pemenang (bid tertinggi)
+        $winningBid = $item->highestBid();
+        if ($winningBid) {
+            // Transfer uang dari bidder ke seller (bidder sudah bayar saat bidding)
+            $winner = $winningBid->user;
+            $seller = $item->user;
+
+            // Tambah saldo seller
+            $seller->balance += $winningBid->bid_amount;
+            $seller->save();
+
+            // Record topup sebagai "pembayaran dari lelang"
+            \App\Models\Topup::create([
+                'user_id' => $seller->id,
+                'amount' => $winningBid->bid_amount,
+                'status' => 'approved', // Langsung approved karena hasil lelang
+            ]);
+        }
+
+        return back()->with('success', 'Lelang ditutup! Pemenang telah ditentukan dan pembayaran diproses.');
     }
     // MENAMPILKAN FORM EDIT
     public function edit(Item $item)

@@ -36,7 +36,7 @@ class AuctionController extends Controller
         ]);
 
         $item = Item::findOrFail($id);
-        
+
         // Cek 1: Apakah lelang masih buka?
         if($item->status !== 'open') {
             return back()->with('error', 'Lelang sudah ditutup!');
@@ -50,6 +50,16 @@ class AuctionController extends Controller
             return back()->with('error', 'Tawaran harus lebih tinggi dari Rp ' . number_format($currentHighest));
         }
 
+        // Cek 3: Apakah user punya cukup saldo?
+        $user = Auth::user();
+        if ($user->balance < $request->bid_amount) {
+            return back()->with('error', 'Saldo tidak cukup! Saldo Anda: Rp ' . number_format($user->balance));
+        }
+
+        // Potong saldo user saat bidding
+        $user->balance -= $request->bid_amount;
+        $user->save();
+
         // Simpan Bid
         Bid::create([
             'user_id' => Auth::id(),
@@ -57,6 +67,6 @@ class AuctionController extends Controller
             'bid_amount' => $request->bid_amount,
         ]);
 
-        return back()->with('success', 'Penawaran berhasil dikirim!');
+        return back()->with('success', 'Penawaran berhasil! Saldo terpotong Rp ' . number_format($request->bid_amount));
     }
 }

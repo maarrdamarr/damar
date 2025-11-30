@@ -24,10 +24,16 @@ class WalletController extends Controller
         return back()->with('success', 'Permintaan top-up dikirim. Tunggu konfirmasi Admin.');
     }
 
-    // ADMIN: Halaman Approval
+    // ADMIN: Halaman Approval Topup
     public function adminIndex() {
         $topups = Topup::with('user')->where('status', 'pending')->latest()->get();
         return view('admin.wallet.index', compact('topups'));
+    }
+
+    // ADMIN: History Semua Transaksi Saldo (Topup + Pembayaran Lelang)
+    public function adminHistory() {
+        $transactions = Topup::with('user')->latest()->get();
+        return view('admin.wallet.history', compact('transactions'));
     }
 
     // ADMIN: Approve Topup
