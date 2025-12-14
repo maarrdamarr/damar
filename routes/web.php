@@ -79,14 +79,20 @@ Route::middleware(['auth', 'role:bidder'])->prefix('bidder')->name('bidder.')->g
 
     // Route Barang Menang (My Wins)
     Route::get('/my-wins', function() {
-        // Cari barang status 'closed', lalu cek apakah user ini penawar tertingginya
-        // Ini logika agak kompleks query-nya, kita sederhanakan dengan filter collection
-        $wonItems = \App\Models\Item::where('status', 'closed')->get()->filter(function($item) {
-            $highestBid = $item->bids()->orderBy('bid_amount', 'desc')->first();
-            return $highestBid && $highestBid->user_id == Auth::id();
-        });
+        // Cari barang status 'closed', belum dibayar, dan user ini penawar tertingginya
+        $wonItems = \App\Models\Item::where('status', 'closed')
+            ->whereNull('paid_at')
+            ->get()
+            ->filter(function($item) {
+                $highestBid = $item->bids()->orderBy('bid_amount', 'desc')->first();
+                return $highestBid && $highestBid->user_id == Auth::id();
+            });
         return view('bidder.wins.index', compact('wonItems'));
     })->name('wins.index');
+
+    // Payment for won items
+    Route::get('/my-wins/{id}/pay', [\App\Http\Controllers\WalletController::class, 'showPay'])->name('wins.pay');
+    Route::post('/my-wins/{id}/pay', [\App\Http\Controllers\WalletController::class, 'pay'])->name('wins.pay.process');
 
     Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'index'])->name('wallet.index');
     Route::post('/wallet', [\App\Http\Controllers\WalletController::class, 'store'])->name('wallet.store');

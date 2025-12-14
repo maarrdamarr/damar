@@ -2,8 +2,10 @@
 namespace App\Http\Controllers;
 use App\Models\Topup;
 use App\Models\User;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class WalletController extends Controller
 {
@@ -69,5 +71,56 @@ class WalletController extends Controller
         $user->save();
 
         return back()->with('success', 'Berhasil menambahkan Rp ' . number_format($request->amount) . ' ke saldo ' . $user->name);
+    }
+
+    // Show payment confirmation for a won item
+    public function showPay($id)
+    {
+        $item = Item::with('bids')->findOrFail($id);
+        $highestBid = $item->bids()->orderBy('bid_amount', 'desc')->first();
+
+        // Ensure current user is the winner
+        if (!$highestBid || $highestBid->user_id != Auth::id()) {
+            return redirect()->route('bidder.wins.index')->with('error', 'Anda bukan pemenang item ini.');
+        }
+
+        return view('bidder.wins.pay', compact('item', 'highestBid'));
+    }
+
+    // Process payment for a won item
+    public function pay(Request $request, $id)
+    {
+        $item = Item::with('bids')->findOrFail($id);
+        $highestBid = $item->bids()->orderBy('bid_amount', 'desc')->first();
+
+        if (!$highestBid || $highestBid->user_id != Auth::id()) {
+            return redirect()->route('bidder.wins.index')->with('error', 'Anda bukan pemenang item ini.');
+        }
+
+        $amount = $highestBid->bid_amount;
+
+        $user = User::find(Auth::id());
+
+        if ($user->balance < $amount) {
+            return back()->with('error', 'Saldo tidak cukup! Silakan top-up terlebih dahulu.');
+        }
+
+        DB::transaction(function() use ($user, $amount, $item) {
+            $user->balance -= $amount;
+            $user->save();
+
+            // Record as a Topup with negative amount to represent debit
+            Topup::create([
+                'user_id' => $user->id,
+                'amount' => -1 * $amount,
+                'status' => 'approved'
+            ]);
+
+            // Mark item as paid
+            $item->paid_at = now();
+            $item->save();
+        });
+
+        return redirect()->route('bidder.wins.index')->with('success', 'Pembayaran berhasil. Terima kasih.');
     }
 }

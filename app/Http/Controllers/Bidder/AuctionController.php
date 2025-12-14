@@ -7,6 +7,8 @@ use App\Models\Item;
 use App\Models\Bid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class AuctionController extends Controller
 {
@@ -51,21 +53,47 @@ class AuctionController extends Controller
         }
 
         // Cek 3: Apakah user punya cukup saldo?
-        $user = Auth::user();
-        if ($user->balance < $request->bid_amount) {
+        $user = User::find(Auth::id());
+
+        // Jika user sebelumnya sudah memasang bid di item ini, itu akan dikembalikan
+        $userPreviousBid = $item->bids()->where('user_id', $user->id)->orderByDesc('bid_amount')->first();
+        $refundable = $userPreviousBid ? $userPreviousBid->bid_amount : 0;
+
+        if (($user->balance + $refundable) < $request->bid_amount) {
             return back()->with('error', 'Saldo tidak cukup! Saldo Anda: Rp ' . number_format($user->balance));
         }
 
-        // Potong saldo user saat bidding
-        $user->balance -= $request->bid_amount;
-        $user->save();
+        // Ambil bid tertinggi saat ini untuk dikembalikan ke pemiliknya (jika berbeda dengan penawar sekarang)
+        $previousHighestBid = $item->bids()->orderByDesc('bid_amount')->first();
 
-        // Simpan Bid
-        Bid::create([
-            'user_id' => Auth::id(),
-            'item_id' => $item->id,
-            'bid_amount' => $request->bid_amount,
-        ]);
+        // Lakukan perubahan keuangan dan penyimpanan bid dalam transaksi
+        DB::transaction(function() use ($previousHighestBid, $user, $request, $item) {
+            // Jika ada previous highest bid
+            if ($previousHighestBid) {
+                // Jika pemilik previous highest adalah penawar saat ini, kembalikan dulu bid lama ke saldo mereka
+                if ($previousHighestBid->user_id == $user->id) {
+                    $user->balance += $previousHighestBid->bid_amount;
+                } else {
+                    // Refund ke user sebelumnya
+                    $prevUser = User::find($previousHighestBid->user_id);
+                    if ($prevUser) {
+                        $prevUser->balance += $previousHighestBid->bid_amount;
+                        $prevUser->save();
+                    }
+                }
+            }
+
+            // Potong saldo user saat ini untuk bid baru
+            $user->balance -= $request->bid_amount;
+            $user->save();
+
+            // Simpan Bid
+            Bid::create([
+                'user_id' => $user->id,
+                'item_id' => $item->id,
+                'bid_amount' => $request->bid_amount,
+            ]);
+        });
 
         return back()->with('success', 'Penawaran berhasil! Saldo terpotong Rp ' . number_format($request->bid_amount));
     }

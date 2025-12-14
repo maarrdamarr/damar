@@ -10,7 +10,7 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Menang Lelang</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $item->name }}</div>
                             <p class="mt-2">Harga Akhir: <strong>Rp {{ number_format($item->highestBid()->bid_amount) }}</strong></p>
-                            <button class="btn btn-success btn-sm mt-2">Bayar Sekarang</button>
+                            <a href="{{ route('bidder.wins.pay', $item->id) }}" class="btn btn-success btn-sm mt-2">Bayar Sekarang</a>
                         </div>
                         <div class="col-auto"><i class="fas fa-trophy fa-2x text-gray-300"></i></div>
                     </div>
