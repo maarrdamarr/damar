@@ -78,7 +78,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 0%; height: 100%;
-            background: #042f2e;
+            background: #dbe1e7;
             transition: all 0.4s ease;
             z-index: -1;
         }
@@ -99,8 +99,10 @@
 
                 <div class="hidden md:flex space-x-12 items-center">
                     <a href="#home" class="nav-link text-white/90 hover:text-yellow-400 font-medium text-xs uppercase tracking-[0.2em] transition">Home</a>
-                    <a href="#collection" class="nav-link text-white/90 hover:text-yellow-400 font-medium text-xs uppercase tracking-[0.2em] transition">Collection</a>
                     <a href="#about" class="nav-link text-white/90 hover:text-yellow-400 font-medium text-xs uppercase tracking-[0.2em] transition">About</a>
+                     <a href="#news" class="nav-link text-white/90 hover:text-yellow-400 font-medium text-xs uppercase tracking-[0.2em] transition">News</a>
+                    <a href="#collection" class="nav-link text-white/90 hover:text-yellow-400 font-medium text-xs uppercase tracking-[0.2em] transition">Collection</a>
+                    <a href="#contact" class="nav-link text-white/90 hover:text-yellow-400 font-medium text-xs uppercase tracking-[0.2em] transition">Contact</a>
                 </div>
 
                 <div class="flex items-center gap-4">
@@ -144,7 +146,7 @@
             
             <div class="flex flex-col sm:flex-row justify-center gap-5" 
                  data-aos="fade-up" data-aos-delay="400" data-aos-duration="1200">
-                <a href="#collection" class="btn-gold px-8 py-4 text-white rounded-full font-bold text-sm uppercase tracking-widest shadow-xl shadow-yellow-900/20 transition-all transform hover:-translate-y-1">
+                <a href="#collection" class="btn-gold  px-8 py-4 text-white rounded-full font-bold text-sm uppercase tracking-widest shadow-xl shadow-yellow-900/20 transition-all transform hover:-translate-y-1">
                     Mulai Menawar
                 </a>
                 <a href="#about" class="px-8 py-4 bg-transparent border border-white/30 text-white rounded-full font-bold text-sm uppercase tracking-widest hover:bg-white hover:text-emerald-900 transition-all backdrop-blur-sm">
@@ -165,9 +167,6 @@
                 <h1 class="font-serif-display text-5xl md:text-7xl lg:text-8xl font-medium text-dark-gradient mb-8 leading-tight" 
                     data-aos="fade-up" data-aos-duration="1200">
                     "ArtKuno"
-                    <h1>
-                        <span class="text-primary-gradient font-bold font-serif-display text-lg md:text-xl">Timeless Luxury</span><br>
-                    </h1>
                     <br>
                 </h1>
             </div>
@@ -188,6 +187,7 @@
                     nilai sejarah dan estetika yang tinggi.
                 </p>
             </br>
+            <br>
                 <p> 
                     <h1>
                         <span class="text-dark font-bold font-serif-display text-lg md:text-xl">Timeless Luxury</span><br>
@@ -199,28 +199,81 @@
         </div>
     </section>
 
-    <section class="py-12 bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100">
-                <div data-aos="fade-up" data-aos-delay="0">
-                    <p class="font-serif-display text-3xl font-bold text-emerald-900">1.2K+</p>
-                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Artefak Terjual</p>
+
+
+
+
+    
+    <section id="news" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-yellow-600 font-bold uppercase tracking-[0.2em] text-xs">Wawasan & Berita</span>
+                <h2 class="font-serif-display text-4xl font-normal text-emerald-950 mt-3">Kabar Terbaru ARTKUNO</h2>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @forelse($news as $index => $newsItem)
+                <div class="auction-card bg-stone-50 rounded-xl overflow-hidden shadow-sm hover:shadow-2xl group flex flex-col h-full border border-stone-100"
+                     data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+
+                    <div class="relative aspect-[16/10] overflow-hidden bg-gray-100">
+                        @if($newsItem->image)
+                            <img src="{{ asset('storage/' . $newsItem->image) }}" class="w-full h-full object-cover">
+                        @else
+                            <img src="https://source.unsplash.com/random/800x600/?news,article,vintage" class="w-full h-full object-cover">
+                        @endif
+                    </div>
+
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-3">{{ $newsItem->created_at->format('d F Y') }}</span>
+
+                        <h3 class="font-serif-display text-xl text-gray-900 mb-4 leading-snug group-hover:text-yellow-600 transition-colors">
+                            <a href="{{ route('news.show', $newsItem) }}" class="line-clamp-2">{{ $newsItem->title }}</a>
+                        </h3>
+
+                        <p class="text-gray-500 text-sm font-light line-clamp-3 mb-6 flex-grow leading-relaxed">{{ $newsItem->content }}</p>
+
+                        <a href="{{ route('news.show', $newsItem) }}" class="w-full block text-center py-3 border border-emerald-900 text-emerald-900 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-900 hover:text-white transition-all duration-300">
+                            Baca Selengkapnya
+                        </a>
+                    </div>
                 </div>
-                <div data-aos="fade-up" data-aos-delay="100">
-                    <p class="font-serif-display text-3xl font-bold text-emerald-900">Rp 50M+</p>
-                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Total Transaksi</p>
-                </div>
-                <div data-aos="fade-up" data-aos-delay="200">
-                    <p class="font-serif-display text-3xl font-bold text-emerald-900">100%</p>
-                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Terverifikasi</p>
-                </div>
-                <div data-aos="fade-up" data-aos-delay="300">
-                    <p class="font-serif-display text-3xl font-bold text-emerald-900">24/7</p>
-                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Premium Support</p>
-                </div>
+                @empty
+                    <div class="col-span-full py-24 text-center">
+                        <div class="inline-block p-6 rounded-full bg-stone-100 mb-4">
+                            <i class="fas fa-newspaper text-stone-300 text-4xl"></i>
+                        </div>
+                        <h3 class="font-serif-display text-xl text-gray-500">Belum ada berita yang dipublikasikan.</h3>
+                        <p class="text-gray-400 mt-2">Nantikan pembaruan dan wawasan dari kami.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
+
+
+        <section class="py-24 bg-emerald-950 relative overflow-hidden flex items-center">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-yellow-600/20 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px]"></div>
+        
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <h2 class="font-serif-display text-4xl md:text-5xl text-white mb-6 leading-tight" data-aos="fade-up">
+                Memiliki Barang Antik Berharga?
+            </h2>
+            <p class="text-gray-300 text-lg font-light mb-10 max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+                Jual koleksi Anda kepada jaringan pembeli elit kami. Kami menjamin proses penilaian yang transparan dan harga terbaik untuk aset sejarah Anda.
+            </p>
+            <div data-aos="fade-up" data-aos-delay="200">
+                <a href="{{ route('register') }}" class="btn-gold px-10 py-4 text-white rounded-full font-bold text-sm uppercase tracking-widest inline-block shadow-lg hover:shadow-yellow-500/20 transition-transform hover:-translate-y-1">
+                    Daftarkan Barang Anda
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+
 
     <section id="collection" class="py-24 bg-stone-50 relative">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -297,79 +350,136 @@
         </div>
     </section>
 
-    <section id="news" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <span class="text-yellow-600 font-bold uppercase tracking-[0.2em] text-xs">Wawasan & Berita</span>
-                <h2 class="font-serif-display text-4xl font-normal text-emerald-950 mt-3">Kabar Terbaru ARTKUNO</h2>
-                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-6 rounded-full"></div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @forelse($news as $index => $newsItem)
-                <div class="auction-card bg-stone-50 rounded-xl overflow-hidden shadow-sm hover:shadow-2xl group flex flex-col h-full border border-stone-100"
-                     data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
-
-                    <div class="relative aspect-[16/10] overflow-hidden bg-gray-100">
-                        @if($newsItem->image)
-                            <img src="{{ asset('storage/' . $newsItem->image) }}" class="w-full h-full object-cover">
-                        @else
-                            <img src="https://source.unsplash.com/random/800x600/?news,article,vintage" class="w-full h-full object-cover">
-                        @endif
-                    </div>
-
-                    <div class="p-6 flex flex-col flex-grow">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-3">{{ $newsItem->created_at->format('d F Y') }}</span>
-
-                        <h3 class="font-serif-display text-xl text-gray-900 mb-4 leading-snug group-hover:text-yellow-600 transition-colors">
-                            <a href="{{ route('news.show', $newsItem) }}" class="line-clamp-2">{{ $newsItem->title }}</a>
-                        </h3>
-
-                        <p class="text-gray-500 text-sm font-light line-clamp-3 mb-6 flex-grow leading-relaxed">{{ $newsItem->content }}</p>
-
-                        <a href="{{ route('news.show', $newsItem) }}" class="w-full block text-center py-3 border border-emerald-900 text-emerald-900 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-900 hover:text-white transition-all duration-300">
-                            Baca Selengkapnya
-                        </a>
-                    </div>
+        <section class="py-12 bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100">
+                <div data-aos="fade-up" data-aos-delay="0">
+                    <p class="font-serif-display text-3xl font-bold text-emerald-900">1.2K+</p>
+                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Artefak Terjual</p>
                 </div>
-                @empty
-                    <div class="col-span-full py-24 text-center">
-                        <div class="inline-block p-6 rounded-full bg-stone-100 mb-4">
-                            <i class="fas fa-newspaper text-stone-300 text-4xl"></i>
-                        </div>
-                        <h3 class="font-serif-display text-xl text-gray-500">Belum ada berita yang dipublikasikan.</h3>
-                        <p class="text-gray-400 mt-2">Nantikan pembaruan dan wawasan dari kami.</p>
-                    </div>
-                @endforelse
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <p class="font-serif-display text-3xl font-bold text-emerald-900">Rp 50M+</p>
+                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Total Transaksi</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <p class="font-serif-display text-3xl font-bold text-emerald-900">100%</p>
+                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Terverifikasi</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <p class="font-serif-display text-3xl font-bold text-emerald-900">24/7</p>
+                    <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Premium Support</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="py-24 bg-emerald-950 relative overflow-hidden flex items-center">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-yellow-600/20 rounded-full blur-[100px]"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px]"></div>
-        
-        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
-            <h2 class="font-serif-display text-4xl md:text-5xl text-white mb-6 leading-tight" data-aos="fade-up">
-                Memiliki Barang Antik Berharga?
+
+
+<!-- =======================
+     CONTACT SECTION ARTKUNO
+======================== -->
+<section class="py-16 bg-black relative overflow-hidden" id="contact">
+    <!-- Soft Gold Blur -->
+    <div class="absolute top-0 left-0 w-72 h-72 bg-yellow-500/10 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-0 right-0 w-72 h-72 bg-yellow-400/10 rounded-full blur-[100px]"></div>
+
+    <div class="max-w-5xl mx-auto px-6 relative z-10">
+        <!-- Title -->
+        <div class="text-center mb-12">
+            <h2 class="font-serif-display text-3xl md:text-4xl text-yellow-400 mb-2 tracking-widest"
+                data-aos="fade-up">
+                ARTKUNO
             </h2>
-            <p class="text-gray-300 text-lg font-light mb-10 max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="100">
-                Jual koleksi Anda kepada jaringan pembeli elit kami. Kami menjamin proses penilaian yang transparan dan harga terbaik untuk aset sejarah Anda.
+            <p class="text-gray-400 text-sm md:text-base max-w-xl mx-auto"
+               data-aos="fade-up" data-aos-delay="100">
+                Konsultasi & Penilaian Barang Antik Bernilai Tinggi
             </p>
-            <div data-aos="fade-up" data-aos-delay="200">
-                <a href="{{ route('register') }}" class="btn-gold px-10 py-4 text-white rounded-full font-bold text-sm uppercase tracking-widest inline-block shadow-lg hover:shadow-yellow-500/20 transition-transform hover:-translate-y-1">
-                    Daftarkan Barang Anda
-                </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <!-- Contact Info -->
+            <div data-aos="fade-right">
+                <h3 class="text-lg font-semibold text-yellow-300 mb-5 tracking-wide">
+                    Informasi Kontak
+                </h3>
+
+                <ul class="space-y-4 text-gray-300 text-sm">
+                    <li>
+                        <span class="text-yellow-400 font-medium">ARTKUNO Auction House</span><br>
+                        Jakarta, Indonesia
+                    </li>
+                    <li>
+                        <span class="text-yellow-400 font-medium">Telepon:</span>
+                        +62 812-3456-7890
+                    </li>
+                    <li>
+                        <span class="text-yellow-400 font-medium">Email:</span>
+                        info@artkuno.id
+                    </li>
+                </ul>
+
+                <p class="mt-6 text-xs text-gray-500 leading-relaxed">
+                    Semua komunikasi bersifat profesional, aman, dan rahasia.
+                </p>
+            </div>
+
+            <!-- Contact Form -->
+                        <div data-aos="fade-left">
+                                <form method="POST" action="{{ route('contact.send') }}"
+                                            class="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg space-y-4">
+                                        @csrf
+
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Nama</label>
+                        <input type="text" name="name"
+                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
+                                   focus:outline-none focus:border-yellow-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Email</label>
+                        <input type="email" name="email"
+                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
+                                   focus:outline-none focus:border-yellow-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Subjek</label>
+                        <input type="text" name="subject"
+                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
+                                   focus:outline-none focus:border-yellow-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Pesan</label>
+                        <textarea name="message" rows="4"
+                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
+                                   focus:outline-none focus:border-yellow-400"></textarea>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full py-3 rounded-full text-sm font-semibold tracking-widest uppercase
+                               text-black bg-gradient-to-r from-yellow-300 to-yellow-500
+                               shadow-md hover:shadow-yellow-500/40 transition-all hover:-translate-y-0.5">
+                        Kirim Pesan
+                    </button>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+<!-- =======================
+     END CONTACT SECTION
+======================== -->
+
+
 
     <footer class="bg-white pt-20 pb-10 border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
                 <div class="md:col-span-5" data-aos="fade-right">
                     <a href="/" class="flex items-center gap-2 mb-6">
-                        <i class="fas fa-gavel text-yellow-500 text-xl"></i>
                         <span class="font-serif-display font-bold text-2xl text-emerald-950 tracking-widest">ART<span class="text-yellow-500">KUNO</span></span>
                     </a>
                     <p class="text-gray-500 leading-relaxed font-light pr-8">

@@ -116,8 +116,17 @@ Route::middleware(['auth'])->group(function () {
 // === ROUTE PROFIL (TAMBAHKAN INI) ===
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/support/send', [\App\Http\Controllers\SupportController::class, 'store'])->name('support.store');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
+
+// Public contact form endpoint (guest allowed)
+Route::post('/contact', [\App\Http\Controllers\SupportController::class, 'store'])->name('contact.send');
+
+// Admin routes for guest conversations
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/support/guest/{email}', [\App\Http\Controllers\SupportController::class, 'adminShowGuest'])->name('support.showGuest');
+    Route::post('/support/guest/{email}/reply', [\App\Http\Controllers\SupportController::class, 'adminReplyGuest'])->name('support.replyGuest');
+});

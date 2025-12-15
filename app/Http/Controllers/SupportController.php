@@ -28,15 +28,33 @@ class SupportController extends Controller
     // 2. Kirim Pesan
     public function store(Request $request)
     {
-        $request->validate(['message' => 'required']);
-
-        SupportMessage::create([
-            'user_id' => Auth::id(), // Jika admin yg login, dia chat sebagai dirinya sendiri atau balasan (nanti)
-            'message' => $request->message,
-            'is_admin_reply' => Auth::user()->role == 'admin'
+        $request->validate([
+            'message' => 'required',
+            'name' => 'nullable|string|max:191',
+            'email' => 'nullable|email|max:191',
         ]);
 
-        return response()->json(['success' => true]);
+        // If user is authenticated, attach user_id; otherwise store guest info
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $isAdminReply = Auth::user()->role == 'admin';
+            $guestName = null; $guestEmail = null;
+        } else {
+            $userId = null;
+            $isAdminReply = false;
+            $guestName = $request->input('name');
+            $guestEmail = $request->input('email');
+        }
+
+        $msg = SupportMessage::create([
+            'user_id' => $userId,
+            'message' => $request->message,
+            'is_admin_reply' => $isAdminReply,
+            'guest_name' => $guestName,
+            'guest_email' => $guestEmail,
+        ]);
+
+        return response()->json(['success' => true, 'id' => $msg->id]);
     }
 
     // 3. Update Pesan (Edit)
@@ -74,27 +92,79 @@ class SupportController extends Controller
     // 1. Halaman Daftar Percakapan (Inbox)
     public function adminIndex()
     {
-        // Ambil User yang pernah mengirim pesan
-        // Kita gunakan whereHas untuk mencari user yang punya data di support_messages
-        $users = User::whereHas('supportMessages')
-                    ->withCount(['supportMessages as latest_message_time' => function($query) {
-                        $query->select(\Illuminate\Support\Facades\DB::raw('max(created_at)'));
-                    }])
-                    ->orderByDesc('latest_message_time')
+        // Build conversations list: users and guests
+        $conversations = [];
+
+        // Users
+        $byUser = SupportMessage::whereNotNull('user_id')
+                ->select('user_id', DB::raw('max(created_at) as last'))
+                    ->groupBy('user_id')
+                    ->orderByDesc('last')
                     ->get();
 
-        return view('admin.support.index', compact('users'));
+        foreach ($byUser as $b) {
+            $u = User::find($b->user_id);
+            if (!$u) continue;
+            $conversations[] = (object)[
+                'type' => 'user',
+                'id' => $u->id,
+                'name' => $u->name,
+                'email' => $u->email,
+                'avatar' => $u->avatar ?? null,
+                'role' => $u->role ?? 'user',
+                'last' => $b->last,
+            ];
+        }
+
+        // Guests (group by guest_email)
+        $byGuest = SupportMessage::whereNull('user_id')
+                ->select('guest_email', DB::raw('max(created_at) as last'))
+                    ->groupBy('guest_email')
+                    ->orderByDesc('last')
+                    ->get();
+
+        foreach ($byGuest as $g) {
+            // get latest message for guest to extract name
+            $latest = SupportMessage::where('guest_email', $g->guest_email)->latest()->first();
+            $conversations[] = (object)[
+                'type' => 'guest',
+                'id' => $g->guest_email, // use email as identifier
+                'name' => $latest->guest_name ?? ($g->guest_email ?? 'Guest'),
+                'email' => $g->guest_email,
+                'avatar' => null,
+                'role' => 'guest',
+                'last' => $g->last,
+            ];
+        }
+
+        // Sort by last desc
+        usort($conversations, function($a, $b) { return strtotime($b->last) <=> strtotime($a->last); });
+
+        return view('admin.support.index', ['users' => collect($conversations)]);
     }
 
     // 2. Halaman Detail Chat dengan User Tertentu
     public function adminShow($userId)
     {
         $user = User::findOrFail($userId);
-        
+
         // Ambil semua pesan milik user ini (baik kiriman dia maupun balasan admin untuk dia)
-        $messages = SupportMessage::where('user_id', $userId)
-                                  ->oldest()
-                                  ->get();
+        $messages = SupportMessage::where('user_id', $userId)->oldest()->get();
+
+        return view('admin.support.show', compact('user', 'messages'));
+    }
+
+    // Show conversation for guest by email
+    public function adminShowGuest($email)
+    {
+        $decoded = urldecode($email);
+        $messages = SupportMessage::where('guest_email', $decoded)->oldest()->get();
+        $latest = $messages->last();
+        $user = (object)[
+            'id' => null,
+            'name' => $latest->guest_name ?? $decoded,
+            'email' => $decoded,
+        ];
 
         return view('admin.support.show', compact('user', 'messages'));
     }
@@ -103,11 +173,27 @@ class SupportController extends Controller
     public function adminReply(Request $request, $userId)
     {
         $request->validate(['message' => 'required']);
-
         SupportMessage::create([
             'user_id' => $userId, // Penting: ID ini adalah ID User (Lawan Bicara), bukan ID Admin
             'message' => $request->message,
             'is_admin_reply' => true // Tandai sebagai balasan admin
+        ]);
+
+        return back()->with('success', 'Balasan terkirim!');
+    }
+
+    // Admin reply to guest
+    public function adminReplyGuest(Request $request, $email)
+    {
+        $request->validate(['message' => 'required']);
+        $decoded = urldecode($email);
+
+        SupportMessage::create([
+            'user_id' => null,
+            'guest_name' => $request->input('guest_name'),
+            'guest_email' => $decoded,
+            'message' => $request->message,
+            'is_admin_reply' => true
         ]);
 
         return back()->with('success', 'Balasan terkirim!');

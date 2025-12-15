@@ -35,6 +35,7 @@
         </div>
 
         <div class="card-footer bg-white">
+            @if($user->id)
             <form action="{{ route('admin.support.reply', $user->id) }}" method="POST">
                 @csrf
                 <div class="input-group">
@@ -46,6 +47,20 @@
                     </div>
                 </div>
             </form>
+            @else
+            <form action="{{ route('admin.support.replyGuest', urlencode($user->email)) }}" method="POST">
+                @csrf
+                <input type="hidden" name="guest_name" value="{{ $user->name }}">
+                <div class="input-group">
+                    <input type="text" name="message" class="form-control" placeholder="Tulis balasan sebagai Admin..." required autocomplete="off">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">
+                            <i class="fas fa-paper-plane"></i> Kirim
+                        </button>
+                    </div>
+                </div>
+            </form>
+            @endif
         </div>
     </div>
 
