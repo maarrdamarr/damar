@@ -33,6 +33,7 @@
         .text-gold-gradient {
             background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 300%;
             animation: shimmer 5s infinite linear;
