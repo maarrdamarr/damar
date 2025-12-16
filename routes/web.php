@@ -115,7 +115,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/support/me', [\App\Http\Controllers\SupportController::class, 'userInbox'])->name('support.my');
 });
 
-// === ROUTE PROFIL (TAMBAHKAN INI) ===
+// === ROUTE PROFIL (Accessible to ALL authenticated users: Admin, Seller, Bidder) ===
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
