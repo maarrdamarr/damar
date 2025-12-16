@@ -437,45 +437,50 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('contact.send') }}"
-                      class="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg space-y-4">
-                    @csrf
+<form method="POST" action="{{ route('contact.send') }}"
+    class="bg-white p-8 rounded-2xl shadow-xl space-y-5 border border-gray-100">
+    @csrf
 
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">Nama</label>
-                        <input type="text" name="name"
-                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
-                                   focus:outline-none focus:border-yellow-400">
-                    </div>
+    <div>
+        <label class="block text-xs text-gray-700 font-medium tracking-wider uppercase mb-1">Nama</label>
+        <input type="text" name="name" required
+            class="w-full bg-gray-50 text-gray-900 text-sm border border-gray-300 rounded-lg px-4 py-2.5
+                   focus:outline-none focus:border-yellow-600 focus:ring-1 focus:ring-yellow-600 transition duration-200"
+            placeholder="Masukkan Nama Anda">
+    </div>
 
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">Email</label>
-                        <input type="email" name="email"
-                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
-                                   focus:outline-none focus:border-yellow-400">
-                    </div>
+    <div>
+        <label class="block text-xs text-gray-700 font-medium tracking-wider uppercase mb-1">Email</label>
+        <input type="email" name="email" required
+            class="w-full bg-gray-50 text-gray-900 text-sm border border-gray-300 rounded-lg px-4 py-2.5
+                   focus:outline-none focus:border-yellow-600 focus:ring-1 focus:ring-yellow-600 transition duration-200"
+            placeholder="alamat@email.com">
+    </div>
 
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">Subjek</label>
-                        <input type="text" name="subject"
-                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
-                                   focus:outline-none focus:border-yellow-400">
-                    </div>
+    <div>
+        <label class="block text-xs text-gray-700 font-medium tracking-wider uppercase mb-1">Subjek</label>
+        <input type="text" name="subject" required
+            class="w-full bg-gray-50 text-gray-900 text-sm border border-gray-300 rounded-lg px-4 py-2.5
+                   focus:outline-none focus:border-yellow-600 focus:ring-1 focus:ring-yellow-600 transition duration-200"
+            placeholder="Topik Pesan">
+    </div>
 
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">Pesan</label>
-                        <textarea name="message" rows="4"
-                            class="w-full bg-black/50 text-white text-sm border border-white/10 rounded-lg px-4 py-2.5
-                                   focus:outline-none focus:border-yellow-400"></textarea>
-                    </div>
+    <div>
+        <label class="block text-xs text-gray-700 font-medium tracking-wider uppercase mb-1">Pesan</label>
+        <textarea name="message" rows="4" required
+            class="w-full bg-gray-50 text-gray-900 text-sm border border-gray-300 rounded-lg px-4 py-2.5
+                   focus:outline-none focus:border-yellow-600 focus:ring-1 focus:ring-yellow-600 transition duration-200"
+            placeholder="Tulis pesan Anda di sini..."></textarea>
+    </div>
 
-                    <button type="submit"
-                        class="w-full py-3 rounded-full text-sm font-semibold tracking-widest uppercase
-                               text-black bg-gradient-to-r from-yellow-300 to-yellow-500
-                               shadow-md hover:shadow-yellow-500/40 transition-all hover:-translate-y-0.5">
-                        Kirim Pesan
-                    </button>
-                </form>
+    <button type="submit"
+        class="w-full py-3 rounded-full text-sm font-semibold tracking-widest uppercase mt-6
+               text-white bg-yellow-600 
+               shadow-lg hover:bg-yellow-700 
+               transition-all duration-300 transform hover:scale-[1.01] focus:ring-4 focus:ring-yellow-500/50">
+        Kirim Pesan
+    </button>
+</form>
         </div>
     </div>
 </section>
