@@ -423,12 +423,6 @@
                     Semua komunikasi bersifat profesional, aman, dan rahasia.
                 </p>
             </div>
-
-            <!-- Contact Form -->
-                @if(session('success'))
-                    <script>window.alert({!! json_encode(session('success')) !!});</script>
-                @endif
-
                 @if($errors->any())
                     <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
                         @foreach($errors->all() as $err)
