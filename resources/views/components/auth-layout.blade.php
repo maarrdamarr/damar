@@ -40,8 +40,8 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/40 via-emerald-800/30 to-transparent"></div>
                 <div class="relative z-10 h-full flex items-center justify-center">
                     <div class="text-white text-center max-w-sm px-8">
-                        <h2 class="text-3xl font-serif-display font-bold mb-3">Discover Curated Antiques</h2>
-                        <p class="text-sm opacity-90">Exclusive auctions, curated collections, and a refined bidding experience — welcome back.</p>
+                        <h2 class="text-3xl font-serif-display font-bold mb-3">ARTKUNO</h2>
+                        <p class="text-sm opacity-90">menghubungkan masa lalu dengan masa depan</p>
                     </div>
                 </div>
             </div>

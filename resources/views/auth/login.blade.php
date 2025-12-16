@@ -34,13 +34,17 @@
         </div>
 
         <div class="flex items-center justify-between mt-6">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-emerald-700 hover:text-yellow-600 transition" href="{{ route('password.request') }}">
-                    {{ __('Lupa Password?') }}
-                </a>
-            @endif
+            <div class="flex flex-col">
+                @if (Route::has('password.request'))
+                    <a class="underline text-sm text-emerald-700 hover:text-yellow-600 transition" href="{{ route('password.request') }}">
+                        {{ __('Lupa Password?') }}
+                    </a>
+                @endif
 
-            <x-primary-button class="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-emerald-950 font-bold shadow-lg border-none rounded-full px-6">
+                <a href="{{ route('home') }}" class="mt-2 text-sm text-gray-600 hover:text-gray-800 transition">Back</a>
+            </div>
+
+            <x-primary-button class="bg-emerald-900 hover:bg-emerald-800 text-white font-bold shadow-lg border-none rounded-full px-6 py-2">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
