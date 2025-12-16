@@ -54,7 +54,12 @@ class SupportController extends Controller
             'guest_email' => $guestEmail,
         ]);
 
-        return response()->json(['success' => true, 'id' => $msg->id]);
+        // If request expects JSON (AJAX), return JSON; otherwise redirect back to welcome with flash
+        if ($request->wantsJson() || $request->ajax() || $request->expectsJson()) {
+            return response()->json(['success' => true, 'id' => $msg->id]);
+        }
+
+        return redirect()->route('home')->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
     }
 
     // 3. Update Pesan (Edit)

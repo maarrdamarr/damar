@@ -425,10 +425,23 @@
             </div>
 
             <!-- Contact Form -->
-                        <div data-aos="fade-left">
-                                <form method="POST" action="{{ route('contact.send') }}"
-                                            class="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg space-y-4">
-                                        @csrf
+                @if(session('success'))
+                    <div class="mb-4 bg-green-50 border-l-4 border-green-400 p-4">
+                        <p class="text-green-800">{{ session('success') }}</p>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
+                        @foreach($errors->all() as $err)
+                            <p class="text-red-800">{{ $err }}</p>
+                        @endforeach
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('contact.send') }}"
+                      class="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg space-y-4">
+                    @csrf
 
                     <div>
                         <label class="block text-xs text-gray-400 mb-1">Nama</label>
@@ -465,7 +478,6 @@
                         Kirim Pesan
                     </button>
                 </form>
-            </div>
         </div>
     </div>
 </section>
