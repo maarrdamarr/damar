@@ -66,7 +66,22 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
 // --- UPDATE GROUP BIDDER ---
 Route::middleware(['auth', 'role:bidder'])->prefix('bidder')->name('bidder.')->group(function () {
     Route::get('/dashboard', function () {
-        return view('bidder.dashboard');
+        $userId = Auth::id();
+
+        $bidsCount = \App\Models\Bid::where('user_id', $userId)->count();
+        $wishlistCount = \App\Models\Wishlist::where('user_id', $userId)->count();
+
+        // Calculate wins: items closed where the highest bid belongs to this user
+        $winsCount = \App\Models\Item::where('status', 'closed')
+            ->get()
+            ->filter(function($item) use ($userId) {
+                $highestBid = $item->bids()->orderBy('bid_amount', 'desc')->first();
+                return $highestBid && $highestBid->user_id == $userId;
+            })->count();
+
+        $auctions = \App\Models\Item::where('status', 'open')->latest()->take(6)->get();
+
+        return view('bidder.dashboard', compact('bidsCount', 'wishlistCount', 'winsCount', 'auctions'));
     })->name('dashboard');
 
     Route::get('/auctions', [\App\Http\Controllers\Bidder\AuctionController::class, 'index'])->name('auction.index');

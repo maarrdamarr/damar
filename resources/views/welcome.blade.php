@@ -495,7 +495,7 @@
                         <span class="font-serif-display font-bold text-2xl text-emerald-950 tracking-widest">ART<span class="text-yellow-500">KUNO</span></span>
                     </a>
                     <p class="text-gray-500 leading-relaxed font-light pr-8">
-                        Royal Auction House adalah destinasi utama untuk lelang barang antik dan seni rupa. Kami menghubungkan masa lalu dengan masa depan melalui kepercayaan dan integritas.
+                        Kami menghubungkan masa lalu dengan masa depan melalui kepercayaan dan integritas.
                     </p>
                 </div>
 

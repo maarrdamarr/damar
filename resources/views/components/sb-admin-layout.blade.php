@@ -94,30 +94,55 @@
             @endif
 
             @if(Auth::user()->role == 'bidder')
+            <!-- Sneat-like Bidder Sidebar -->
+            <div class="sidebar-user d-flex align-items-center p-3" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <div class="user-avatar mr-3">
+                    @if(Auth::user()->avatar)
+                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" class="rounded-circle" style="width:48px;height:48px;object-fit:cover;">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ffffff&color=0b5132" class="rounded-circle" style="width:48px;height:48px;">
+                    @endif
+                </div>
+                <div class="user-info text-white">
+                    <div class="font-weight-bold">{{ Auth::user()->name }}</div>
+                    <small class="d-block text-white-50">Pembeli • {{ Auth::user()->email }}</small>
+                </div>
+            </div>
+
             <li class="nav-item {{ request()->routeIs('bidder.dashboard') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('bidder.dashboard') }}">
                     <i class="fas fa-fw fa-home"></i><span>Dashboard</span>
                 </a>
             </li>
-            <li class="nav-item {{ request()->routeIs('bidder.wallet.index') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('bidder.wallet.index') }}">
-                    <i class="fas fa-fw fa-wallet"></i><span>Dompet Saya</span>
-                    <span class="badge badge-success ml-1">Rp {{ number_format(Auth::user()->balance ?? 0) }}</span>
-                </a>
-            </li>
+
             <li class="nav-item {{ request()->routeIs('bidder.auction.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('bidder.auction.index') }}">
-                    <i class="fas fa-fw fa-search-dollar"></i><span>Cari Barang</span>
+                    <i class="fas fa-fw fa-search"></i><span>Jelajahi Lelang</span>
                 </a>
             </li>
+
             <li class="nav-item {{ request()->routeIs('bidder.wishlist.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('bidder.wishlist.index') }}">
                     <i class="fas fa-fw fa-heart"></i><span>Favorit Saya</span>
                 </a>
             </li>
+
+            <li class="nav-item {{ request()->routeIs('bidder.wallet.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('bidder.wallet.index') }}">
+                    <i class="fas fa-fw fa-wallet"></i><span>Dompet</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ request()->routeIs('bidder.wins.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('bidder.wins.index') }}">
-                    <i class="fas fa-fw fa-trophy"></i><span>Pemenang / Invoice</span>
+                    <i class="fas fa-fw fa-trophy"></i><span>Menang Saya</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ request()->routeIs('messages.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('messages.index') }}">
+                    <i class="fas fa-fw fa-envelope"></i><span>Pesan</span>
+                    <span class="badge badge-light ml-1">{{ Auth::user()->receivedMessages()->count() }}</span>
                 </a>
             </li>
             @endif

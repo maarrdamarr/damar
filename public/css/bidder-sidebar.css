@@ -1,0 +1,67 @@
+/* Bidder sidebar Sneat-like green theme overrides */
+#accordionSidebar {
+  background: linear-gradient(180deg, #0f5132 0%, #1f7a5a 100%) !important;
+}
+
+#accordionSidebar .sidebar-brand-text {
+  color: #fff !important;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+#accordionSidebar .nav-link {
+  color: rgba(255,255,255,0.95) !important;
+  padding: 0.85rem 1rem !important;
+  font-weight: 600;
+}
+
+#accordionSidebar .nav-link .fas,
+#accordionSidebar .nav-link .fa-fw {
+  color: rgba(255,255,255,0.9) !important;
+}
+
+#accordionSidebar .nav-item.active .nav-link,
+#accordionSidebar .nav-link:hover {
+  background: rgba(255,255,255,0.06) !important;
+  color: #fff !important;
+}
+
+.sidebar-user {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+}
+
+.sidebar-user .user-info {
+  color: #f8fff8;
+}
+
+.sidebar-user .user-info small {
+  color: rgba(255,255,255,0.8);
+}
+
+#accordionSidebar .badge-light {
+  background: rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Brand icon circle */
+.sidebar-brand-icon img {
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+}
+
+/* Sidebar toggle */
+#sidebarToggle {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #accordionSidebar { background: #0f5132 !important; }
+}
