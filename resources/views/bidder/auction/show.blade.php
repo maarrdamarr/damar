@@ -90,7 +90,7 @@
     <form action="{{ route('messages.store', $item->id) }}" method="POST">
         @csrf
         <div class="input-group">
-            <input type="text" name="message" class="form-control form-control-sm" placeholder="Barang ready gan?" required>
+            <input type="text" name="pesan" class="form-control form-control-sm" placeholder="Barang ready gan?" required>
             <div class="input-group-append">
                 <button class="btn btn-primary btn-sm" type="submit"><i class="fas fa-paper-plane"></i></button>
             </div>

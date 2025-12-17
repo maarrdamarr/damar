@@ -24,7 +24,11 @@ class MessageController extends Controller
     // Kirim Pesan (Dari Bidder ke Seller atau Seller ke Bidder)
     public function store(Request $request, $itemId)
     {
-        $request->validate(['pesan' => 'required|string']);
+        // Accept either 'pesan' (preferred) or 'message' (fallback from some views)
+        $request->validate([
+            'pesan' => 'required_without:message|string',
+            'message' => 'required_without:pesan|string',
+        ]);
         
         $item = Item::findOrFail($itemId);
         $authUser = Auth::user();
@@ -45,11 +49,13 @@ class MessageController extends Controller
             $receiverId = $item->user_id;
         }
 
+        $text = $request->input('pesan', $request->input('message'));
+
         $message = Message::create([
             'sender_id' => $authUser->id,
             'receiver_id' => $receiverId,
             'item_id' => $itemId,
-            'pesan' => $request->pesan,
+            'message' => $text,
         ]);
 
         // Return JSON for AJAX, otherwise redirect
@@ -136,7 +142,7 @@ class MessageController extends Controller
                 'id' => $m->id,
                 'sender_id' => $m->sender_id,
                 'sender_name' => $m->sender->name ?? 'System',
-                'pesan' => $m->pesan,
+                'message' => $m->message,
                 'created_at' => $m->created_at->toDateTimeString(),
             ];
         });

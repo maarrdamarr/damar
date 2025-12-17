@@ -87,8 +87,8 @@
             </li>
             <li class="nav-item {{ request()->routeIs('messages.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('messages.index') }}">
-                    <i class="fas fa-fw fa-envelope"></i><span>Pesan Masuk</span>
-                    <span class="badge badge-danger badge-counter">{{ Auth::user()->receivedMessages()->count() }}</span>
+                    <i class="fas fa-fw fa-envelope"></i><span>Pesan</span>
+                    <span class="badge badge-light ml-1">{{ Auth::user()->receivedMessages()->count() }}</span>
                 </a>
             </li>
             @endif

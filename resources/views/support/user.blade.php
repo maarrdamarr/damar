@@ -9,7 +9,9 @@
     <div class="d-flex mb-3">
         <div class="btn-group" role="group" aria-label="chat-tabs">
             <button id="btnCs" class="btn btn-outline-primary">Chat CS</button>
-            <button id="btnSeller" class="btn btn-outline-secondary">Chat Seller</button>
+            @if(Auth::user()->role != 'seller')
+                <button id="btnSeller" class="btn btn-outline-secondary">Chat Seller</button>
+            @endif
         </div>
     </div>
 
@@ -40,6 +42,7 @@
         </div>
     </div>
 
+    @if(Auth::user()->role != 'seller')
     <div id="sellerContainer" class="card shadow mb-4" style="display:none;">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Chat Seller - Barang yang pernah Anda bid</h6>
@@ -64,6 +67,7 @@
             @endif
         </div>
     </div>
+    @endif
 </x-sb-admin-layout>
 
 <script>

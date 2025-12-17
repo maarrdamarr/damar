@@ -57,7 +57,7 @@
                                     @endif
                                 </strong>
                             </p>
-                            <p class="mb-2">{{ $message->pesan }}</p>
+                            <p class="mb-2">{{ $message->message ?? $message->pesan ?? '' }}</p>
                             <small class="text-muted">{{ $message->created_at->format('d M Y H:i') }}</small>
                         </div>
                     </div>
@@ -71,10 +71,13 @@
 
         <!-- Message Input Form -->
         <div class="card-footer bg-light border-top">
-            <form id="messageForm">
+            <form id="messageForm" action="{{ route('messages.store', $item->id) }}" method="POST">
+                @csrf
+                <input type="hidden" name="buyer_id" value="{{ $buyer->id }}">
                 <div class="input-group">
                     <input type="text" 
                            id="messageInput"
+                           name="message"
                            class="form-control" 
                            placeholder="Ketikkan pesan..." 
                            required>
@@ -114,11 +117,12 @@
         
         const messageInput = document.getElementById('messageInput');
         const pesan = messageInput.value.trim();
-        
+
         if (!pesan) return;
 
         const formData = new FormData();
-        formData.append('pesan', pesan);
+        // send as 'message' to match DB column; controller accepts both
+        formData.append('message', pesan);
         formData.append('buyer_id', '{{ $buyer->id }}');
         formData.append('_token', '{{ csrf_token() }}');
 
@@ -138,7 +142,7 @@
             return response.json();
         })
         .then(data => {
-            if (data.success) {
+                if (data.success) {
                 // Clear input
                 messageInput.value = '';
                 
@@ -150,7 +154,7 @@
                     <div class="d-flex justify-content-end">
                         <div class="p-3 rounded bg-primary text-white" style="max-width: 70%;">
                             <p class="mb-1"><strong>Anda</strong></p>
-                            <p class="mb-2">${escapeHtml(pesan)}</p>
+                                <p class="mb-2">${escapeHtml(pesan)}</p>
                             <small class="text-muted">Baru saja</small>
                         </div>
                     </div>
