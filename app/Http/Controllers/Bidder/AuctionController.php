@@ -95,6 +95,18 @@ class AuctionController extends Controller
             ]);
         });
 
+        // Anti-sniping: if bid placed within anti-sniping window, extend ends_at
+        if ($item->ends_at) {
+            $window = (int) \App\Models\Setting::get('auction.anti_sniping_window_minutes', 5);
+            $extension = (int) \App\Models\Setting::get('auction.anti_sniping_extension_minutes', 5);
+
+            $remainingSeconds = $item->ends_at->getTimestamp() - now()->getTimestamp();
+            if ($remainingSeconds > 0 && $remainingSeconds <= ($window * 60)) {
+                $item->ends_at = $item->ends_at->addMinutes($extension);
+                $item->save();
+            }
+        }
+
         return back()->with('success', 'Penawaran berhasil! Saldo terpotong Rp ' . number_format($request->bid_amount));
     }
 }

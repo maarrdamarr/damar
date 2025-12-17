@@ -58,6 +58,16 @@ class MessageController extends Controller
             'message' => $text,
         ]);
 
+        // If the sender is the seller replying to a buyer, remove the buyer's previous messages
+        // for this item so the seller's inbox/notification clears for that conversation.
+        if ($authUser->id == $item->user_id) {
+            // mark buyer's previous messages as read for this item
+            Message::where('sender_id', $receiverId)
+                ->where('receiver_id', $authUser->id)
+                ->where('item_id', $itemId)
+                ->update(['is_read' => true]);
+        }
+
         // Return JSON for AJAX, otherwise redirect
         if ($request->expectsJson() || $request->wantsJson()) {
             return response()->json(['success' => true, 'message' => $message]);
@@ -85,6 +95,14 @@ class MessageController extends Controller
                 ->distinct();
         })->get();
 
+        // If seller opens this page, mark unread messages from buyers for this item as read
+        if ($authUser->id == $item->user_id) {
+            Message::where('item_id', $itemId)
+                ->where('receiver_id', $authUser->id)
+                ->where('is_read', false)
+                ->update(['is_read' => true]);
+        }
+
         return view('messages.item-buyers', compact('item', 'buyers'));
     }
 
@@ -98,6 +116,15 @@ class MessageController extends Controller
         // Hanya seller atau buyer yang terlibat bisa melihat
         if ($authUser->id != $item->user_id && $authUser->id != $buyer->id) {
             return redirect()->back()->withErrors('Akses ditolak');
+        }
+
+        // Jika yang membuka adalah seller (pemilik item), tandai pesan-pesan pembeli
+        // untuk item ini sebagai terbaca agar notifikasi hilang saat seller membuka percakapan.
+        if ($authUser->id == $item->user_id) {
+            Message::where('item_id', $itemId)
+                ->where('sender_id', $buyerId)
+                ->where('receiver_id', $authUser->id)
+                ->update(['is_read' => true]);
         }
 
         // Ambil pesan antara seller dan buyer untuk item ini
@@ -136,6 +163,15 @@ class MessageController extends Controller
             })
             ->orderBy('created_at', 'asc')
             ->get();
+
+        // If seller is fetching the conversation, mark buyer's messages as read
+        if ($authUser->id == $item->user_id) {
+            Message::where('item_id', $itemId)
+                ->where('sender_id', $buyer->id)
+                ->where('receiver_id', $authUser->id)
+                ->where('is_read', false)
+                ->update(['is_read' => true]);
+        }
 
         $data = $messages->map(function($m) {
             return [

@@ -37,6 +37,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Durasi Lelang (jam) <small class="text-muted">Isi untuk mengubah waktu berakhir dari sekarang</small></label>
+                    <input type="number" name="duration_hours" class="form-control" min="1" placeholder="24">
+                </div>
+
+                <div class="form-group">
                     <label>Foto Barang</label>
                     <div class="row align-items-center">
                         <div class="col-md-3 mb-2">

@@ -11,6 +11,38 @@ class Item extends Model
 
         protected $guarded = [];
 
+        protected $casts = [
+            'ends_at' => 'datetime',
+        ];
+
+        /**
+         * Close this auction: mark closed, determine winner and process payment.
+         */
+        public function close()
+        {
+            if ($this->status === 'closed') return false;
+
+            $this->status = 'closed';
+            $this->save();
+
+            $winningBid = $this->highestBid();
+            if ($winningBid) {
+                $winner = $winningBid->user;
+                $seller = $this->user;
+
+                $seller->balance += $winningBid->bid_amount;
+                $seller->save();
+
+                \App\Models\Topup::create([
+                    'user_id' => $seller->id,
+                    'amount' => $winningBid->bid_amount,
+                    'status' => 'approved',
+                ]);
+            }
+
+            return true;
+        }
+
         // Barang milik satu user (Seller)
         public function user() {
             return $this->belongsTo(User::class);

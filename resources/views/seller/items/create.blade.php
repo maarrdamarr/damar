@@ -40,6 +40,11 @@
                     <input type="file" name="image" class="form-control-file">
                 </div>
 
+                <div class="form-group">
+                    <label>Durasi Lelang (jam) <small class="text-muted">Opsional, kosongkan untuk default admin</small></label>
+                    <input type="number" name="duration_hours" class="form-control" min="1" placeholder="24">
+                </div>
+
                 <button type="submit" class="btn btn-primary">Simpan & Mulai Lelang</button>
                 <a href="{{ route('seller.items.index') }}" class="btn btn-secondary">Batal</a>
             </form>

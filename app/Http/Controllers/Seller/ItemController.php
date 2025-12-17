@@ -31,6 +31,7 @@ class ItemController extends Controller
             'description' => 'required|string',
             'start_price' => 'required|numeric|min:1000',
             'image' => 'nullable|image|max:2048',
+            'duration_hours' => 'nullable|numeric|min:1'
         ]);
 
         $imagePath = null;
@@ -39,6 +40,15 @@ class ItemController extends Controller
         }
 
         try {
+            $endsAt = null;
+            if ($request->filled('duration_hours')) {
+                $endsAt = now()->addHours((int)$request->input('duration_hours'));
+            } else {
+                // read default duration from DB settings if available
+                $default = (int) \App\Models\Setting::get('auction.default_duration_hours', config('auction.default_duration_hours', 24));
+                $endsAt = now()->addHours($default);
+            }
+
             Item::create([
                 'user_id' => Auth::id(), // Otomatis set pemilik barang
                 'name' => $request->name,
@@ -46,6 +56,7 @@ class ItemController extends Controller
                 'start_price' => $request->start_price,
                 'image' => $imagePath,
                 'status' => 'open',
+                'ends_at' => $endsAt,
             ]);
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Gagal menyimpan barang: ' . $e->getMessage());
@@ -74,27 +85,7 @@ class ItemController extends Controller
     {
         $item = Item::where('user_id', Auth::id())->findOrFail($id);
 
-        // Ubah status jadi closed
-        $item->update(['status' => 'closed']);
-
-        // Cari pemenang (bid tertinggi)
-        $winningBid = $item->highestBid();
-        if ($winningBid) {
-            // Transfer uang dari bidder ke seller (bidder sudah bayar saat bidding)
-            $winner = $winningBid->user;
-            $seller = $item->user;
-
-            // Tambah saldo seller
-            $seller->balance += $winningBid->bid_amount;
-            $seller->save();
-
-            // Record topup sebagai "pembayaran dari lelang"
-            \App\Models\Topup::create([
-                'user_id' => $seller->id,
-                'amount' => $winningBid->bid_amount,
-                'status' => 'approved', // Langsung approved karena hasil lelang
-            ]);
-        }
+        $item->close();
 
         return back()->with('success', 'Lelang ditutup! Pemenang telah ditentukan dan pembayaran diproses.');
     }
@@ -121,6 +112,7 @@ class ItemController extends Controller
             'description' => 'required|string',
             'start_price' => 'required|numeric|min:1000',
             'image' => 'nullable|image|max:2048', // Opsional, kalau mau ganti foto
+            'duration_hours' => 'nullable|numeric|min:1'
         ]);
 
         $data = [
@@ -137,6 +129,11 @@ class ItemController extends Controller
             }
             // Upload foto baru
             $data['image'] = $request->file('image')->store('items', 'public');
+        }
+
+        // update ends_at if provided
+        if ($request->filled('duration_hours')) {
+            $data['ends_at'] = now()->addHours((int)$request->input('duration_hours'));
         }
 
         try {

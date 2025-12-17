@@ -12,6 +12,18 @@ class Message extends Model
     // Allow mass assignment for all fields (simple app)
     protected $guarded = [];
 
+    /**
+     * Attribute casts
+     */
+    protected $casts = [
+        'is_read' => 'boolean',
+    ];
+
+    // Ensure default for is_read when creating
+    protected $attributes = [
+        'is_read' => false,
+    ];
+
     // Relations
     public function sender()
     {

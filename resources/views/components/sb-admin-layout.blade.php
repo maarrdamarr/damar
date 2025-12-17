@@ -88,7 +88,7 @@
             <li class="nav-item {{ request()->routeIs('messages.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('messages.index') }}">
                     <i class="fas fa-fw fa-envelope"></i><span>Pesan</span>
-                    <span class="badge badge-light ml-1">{{ Auth::user()->receivedMessages()->count() }}</span>
+                    <span class="badge badge-light ml-1">{{ Auth::user()->receivedMessages()->where('is_read', false)->count() }}</span>
                 </a>
             </li>
             @endif
@@ -142,7 +142,7 @@
             <li class="nav-item {{ request()->routeIs('messages.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('messages.index') }}">
                     <i class="fas fa-fw fa-envelope"></i><span>Pesan</span>
-                    <span class="badge badge-light ml-1">{{ Auth::user()->receivedMessages()->count() }}</span>
+                    <span class="badge badge-light ml-1">{{ Auth::user()->receivedMessages()->where('is_read', false)->count() }}</span>
                 </a>
             </li>
 
