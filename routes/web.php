@@ -54,7 +54,39 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // --- UPDATE GROUP SELLER ---
 Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->group(function () {
     Route::get('/dashboard', function () {
-        return view('seller.dashboard');
+        $sellerId = Auth::id();
+
+        $totalItems = \App\Models\Item::where('user_id', $sellerId)->count();
+        $openItems = \App\Models\Item::where('user_id', $sellerId)->where('status', 'open')->count();
+        $paidItems = \App\Models\Item::where('user_id', $sellerId)->whereNotNull('paid_at')->count();
+        $pendingPayment = \App\Models\Item::where('user_id', $sellerId)
+            ->where('status', 'closed')
+            ->whereNull('paid_at')
+            ->count();
+        $bidsCount = \App\Models\Bid::whereHas('item', function ($query) use ($sellerId) {
+            $query->where('user_id', $sellerId);
+        })->count();
+        $recentItems = \App\Models\Item::where('user_id', $sellerId)
+            ->withCount('bids')
+            ->latest()
+            ->take(6)
+            ->get();
+        $user = Auth::user();
+        if ($user instanceof \App\Models\User) {
+            $unreadMessages = $user->receivedMessages()->where('is_read', false)->count();
+        } else {
+            $unreadMessages = 0;
+        }
+
+        return view('seller.dashboard', compact(
+            'totalItems',
+            'openItems',
+            'paidItems',
+            'pendingPayment',
+            'bidsCount',
+            'recentItems',
+            'unreadMessages'
+        ));
     })->name('dashboard');
     
     Route::resource('items', \App\Http\Controllers\Seller\ItemController::class);

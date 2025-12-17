@@ -15,6 +15,25 @@
         .sidebar-brand .brand-kuno {
             color: #d1a846;
         }
+
+        #accordionSidebar .seller-dashboard-item .nav-link {
+            color: #cfe0ff;
+        }
+
+        #accordionSidebar .seller-dashboard-item .nav-link i {
+            color: #cfe0ff;
+        }
+
+        #accordionSidebar .seller-dashboard-item.active .nav-link,
+        #accordionSidebar .seller-dashboard-item .nav-link:hover {
+            background: rgba(78, 115, 223, 0.28);
+            color: #ffffff;
+        }
+
+        #accordionSidebar .seller-dashboard-item.active .nav-link i,
+        #accordionSidebar .seller-dashboard-item .nav-link:hover i {
+            color: #ffffff;
+        }
     </style>
 </head>
 
@@ -82,7 +101,7 @@
                     <i class="fas fa-fw fa-headset"></i><span>CS / Support</span>
                 </a>
             </li>
-            <li class="nav-item {{ request()->routeIs('seller.dashboard') ? 'active' : '' }}">
+            <li class="nav-item seller-dashboard-item {{ request()->routeIs('seller.dashboard') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('seller.dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span>
                 </a>
