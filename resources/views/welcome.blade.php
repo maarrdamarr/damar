@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Artkuno | Senin Adalah Ledakan</title>
+    <title>Artkuno | Seni Adalah Ledakan</title>
     <!-- Inline SVG favicon (dark green tile with 'A') -->
     <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230f5132'/><text x='50' y='65' font-size='55' text-anchor='middle' fill='%23ffffff' font-family='Arial' font-weight='700'>A</text></svg>">
 
